@@ -8,6 +8,7 @@ import {
   ENDPOINTS,
   FeedEntry,
   FeedResponse,
+  Tag,
   authedRequest,
 } from './api';
 import {
@@ -203,6 +204,7 @@ export default class MatterPlugin extends Plugin {
   private _renderFeedEntry(feedEntry: FeedEntry): string {
     const annotations = feedEntry.content.my_annotations.sort((a, b) => a.word_start - b.word_start);
     return `
+# ${feedEntry.content.title}
 ## Metadata
 ${this._renderMetadata(feedEntry)}
 ## Highlights
@@ -221,9 +223,16 @@ ${annotations.map(this._renderAnnotation).join("\n")}
     if (feedEntry.content.author) {
       metadata += `\n* Author: [[${feedEntry.content.author.any_name}]]`;
     }
+    if (feedEntry.content.tags) {
+      metadata += `\n* Tags: ${this._renderTags(feedEntry.content.tags)}`;
+    }
 
     metadata += '\n';
     return metadata;
+  }
+
+  private _renderTags(tags: Tag[]): string {
+    return tags.map((t: { name: string }) => `[[${t.name}]]`).join(' ')
   }
 
   private _renderAnnotation(annotation: Annotation) {

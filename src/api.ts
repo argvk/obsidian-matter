@@ -21,10 +21,15 @@ export interface Author {
   any_name: string | null;
 }
 
+export interface Tag {
+  name: string;
+}
+
 export interface Content {
   author: Author;
   my_annotations: Annotation[];
   publication_date: string;
+  tags: Tag[];
   title: string;
   url: string;
 }
